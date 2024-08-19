@@ -3,12 +3,15 @@ class Series
     @string = string
   end
 
-  def slices(num)
-    raise ArgumentError if num > @string.length
+  def slices(number)
+    number = Integer(number)
+    raise ArgumentError, "Slice size of #{number} exceeds word length #{@string.length}" if number > @string.length
 
     @string
       .chars
-      .each_cons(num)
+      .each_cons(number)
       .map(&:join)
   end
 end
+
+binding.irb
