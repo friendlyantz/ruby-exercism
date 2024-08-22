@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 class SpaceAge
   ORBITAL_PERIODS = {
     mercury: 0.2408467,
@@ -13,16 +15,12 @@ class SpaceAge
   SECONDS_ON_EARTH = 31557600
 
   def initialize(seconds)
-    @seconds = Integer(seconds)
+    @seconds = BigDecimal(seconds)
   end
-
-  # def on_earth
-  #   (@seconds / (ORBITAL_PERIODS[:earth] * SECONDS_ON_EARTH )).round(2)
-  # end
 
   ORBITAL_PERIODS.each do |name, period|
     define_method :"on_#{name}" do
-      (@seconds / (ORBITAL_PERIODS[name] * SECONDS_ON_EARTH )).round(2)
+      (@seconds / (ORBITAL_PERIODS[name] * SECONDS_ON_EARTH ))
     end
   end
 end
