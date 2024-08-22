@@ -45,6 +45,10 @@ class SeriesTest < Minitest::Test
     assert_raises ArgumentError do
       series.slices(6)
     end
+    error = assert_raises(SliceLengthError) do
+      series.slices(6)
+    end
+    assert_equal  'Slice size can not exceed sample length', error.message
   end
 
   def test_slice_length_cannot_be_zero

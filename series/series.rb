@@ -1,4 +1,7 @@
 class SliceLengthError < ArgumentError
+  def initialize(message = 'Slice size can not exceed sample length')
+    super
+  end
 end
 
 class Series
@@ -9,8 +12,8 @@ class Series
   end
 
   def slices(number)
-    number = Integer(number)
-    raise SliceLengthError, 'Slice size can not exceed sample length' if number > string.length
+    number.positive? or raise SliceLengthError, 'must be positive'
+    number <= string.length or raise SliceLengthError
 
     @string
       .chars
@@ -19,4 +22,3 @@ class Series
   end
 end
 
-binding.irb if $PROGRAM_NAME == __FILE__ && $DEBUG
