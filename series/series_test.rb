@@ -60,6 +60,14 @@ class SeriesTest < Minitest::Test
     end
   end
 
+  def test_invalid_input_type
+    # skip
+    error = assert_raises(InvalidInput) do
+      Series.new(1)
+    end
+    assert_equal  'Invalid input: please provide a String or Array', error.message
+  end
+
   def test_slice_length_cannot_be_negative
     # skip
     slice_string = "123"

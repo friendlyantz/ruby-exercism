@@ -4,20 +4,30 @@ class SliceLengthError < ArgumentError
   end
 end
 
-class Series
-  attr_reader :string
+class InvalidInput < ArgumentError
+  def initialize(message = 'Invalid input: please provide a String or Array')
+    super
+  end
+end
 
-  def initialize(string)
-    @string = string
+class Series
+  attr_reader :collection
+
+  def initialize(input)
+    @collection =
+      case input
+      in String then input.chars
+      in Array then input
+      in _ then raise InvalidInput
+      end
   end
 
-  def slices(number)
-    number.positive? or raise SliceLengthError, 'must be positive'
-    number <= string.length or raise SliceLengthError
+  def slices(slice_size)
+    slice_size.positive? or raise SliceLengthError, 'must be positive'
+    slice_size <= collection.size or raise SliceLengthError
 
-    @string
-      .chars
-      .each_cons(number)
+    collection
+      .each_cons(slice_size)
       .map(&:join)
   end
 end
