@@ -17,8 +17,8 @@ class Series
     @collection =
       case input
       in String then input.chars
-      in Array then input
-      in _ then raise InvalidInput
+      in _ if _.respond_to?(:map) then input
+      else raise InvalidInput
       end
   end
 

@@ -14,6 +14,12 @@ class SeriesTest < Minitest::Test
     assert_equal %w[1 2], series.slices(1)
   end
 
+  def test_slices_of_one_from_two_for_array_input
+    # skip
+    series = Series.new([1, 2])
+    assert_equal %w[1 2], series.slices(1)
+  end
+
   def test_slices_of_two
     # skip
     series = Series.new("35")
