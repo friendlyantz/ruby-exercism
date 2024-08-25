@@ -11,16 +11,24 @@ class InvalidInput < ArgumentError
 end
 
 class Series
-  attr_reader :collection
 
-  def initialize(input)
+  private
+
+  attr_writer :collection
+
+  def initialize(*input)
+    input = input.first if input.size == 1
     @collection =
       case input
       in String then input.chars
-      in _ if _.respond_to?(:map) then input
+      in _ if _.respond_to?(:index) then input
       else raise InvalidInput
       end
   end
+
+  public
+
+  attr_reader :collection
 
   def slices(slice_size)
     slice_size.positive? or raise SliceLengthError, 'must be positive'

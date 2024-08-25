@@ -44,6 +44,12 @@ class SeriesTest < Minitest::Test
     assert_equal %w[91849 18493 84939 49390 93904 39042 90424 04243], series.slices(5)
   end
 
+  def test_slices_of_a_multiple_args
+    # skip
+    series = Series.new(1, 2, 3)
+    assert_equal %w[1 2 3], series.slices(1)
+  end
+
   def test_slice_length_is_too_large
     # skip
     slice_string = "12345"
