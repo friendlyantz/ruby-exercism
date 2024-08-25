@@ -1,5 +1,5 @@
-class UnknownPlanet < StandardError
-  def initialize(message = 'we are not aware of this planet')
+class UnknownPlanet < NoMethodError
+  def initialize(message = 'we are not aware of this orbit details')
     super
   end
 end
@@ -7,7 +7,7 @@ end
 class SpaceAge
   seconds_on_earth = 31_557_600
 
-  ORBITAL_PERIODS = {
+  ORBITAL_PERIOD = {
     mercury: Rational(0.2408467, 1),
     venus: Rational(0.61519726, 1),
     earth: 1r,
@@ -18,17 +18,20 @@ class SpaceAge
     neptune: Rational(164.79132, 1)
   }.transform_values { _1 * seconds_on_earth }
 
+  private
+
   def initialize(seconds)
     @seconds = seconds
   end
 
+
   def method_missing(method_name, *args, &block)
     if method_name.to_s.start_with?('on_')
-      planet = method_name.to_s.delete_prefix('on_').to_sym
-      raise UnknownPlanet unless ORBITAL_PERIODS.key?(planet)
+      raise UnknownPlanet unless aware_of_orbit?(method_name)
 
+      planet_name = get_planet_name(method_name)
       self.class.define_method(method_name) do
-        @seconds / ORBITAL_PERIODS[planet]
+        @seconds / ORBITAL_PERIOD[planet_name]
       end
       send(method_name)
     else
@@ -36,7 +39,18 @@ class SpaceAge
     end
   end
 
+
   def respond_to_missing?(method_name, include_private = false)
-    method_name.to_s.start_with?('on_') || super
+    method_name.to_s.start_with?('on_') &&
+    aware_of_orbit?(method_name) ||
+    super
+  end
+
+  def aware_of_orbit?(method_name)
+    ORBITAL_PERIOD.key?(get_planet_name(method_name))
+  end
+
+  def get_planet_name(method_name)
+    method_name.to_s.delete_prefix('on_').to_sym
   end
 end
