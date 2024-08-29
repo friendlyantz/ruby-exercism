@@ -4,25 +4,25 @@ class SliceLengthError < ArgumentError
   end
 end
 
-class InvalidInput < ArgumentError
-  def initialize(message = 'Invalid input: please provide a String or Array')
+class InvalidInputError < ArgumentError
+  def initialize(message = 'A collection must be used')
     super
   end
 end
 
 class Series
-
   private
 
   attr_writer :collection
 
-  def initialize(*input)
-    input = input.first if input.size == 1
+  def initialize(*collection)
+    collection = collection.first if collection.size == 1
     @collection =
-      case input
-      in String then input.chars
-      in _ if _.respond_to?(:index) then input
-      else raise InvalidInput
+      case collection
+      in String then collection.chars
+      in Integer then collection.digits.reverse
+      in _ if _.respond_to?(:index) then collection
+      else raise InvalidInputError
       end
   end
 
@@ -39,4 +39,3 @@ class Series
       .map(&:join)
   end
 end
-
